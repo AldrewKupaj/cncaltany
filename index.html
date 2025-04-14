@@ -20,7 +20,7 @@
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       margin-bottom: 30px;
     }
@@ -58,6 +58,13 @@
     .form-section {
       margin-top: 40px;
     }
+    .info {
+      margin-top: 30px;
+      font-size: 15px;
+      background: #fdf6e3;
+      padding: 15px;
+      border-radius: 12px;
+    }
   </style>
 </head>
 <body>
@@ -81,9 +88,22 @@
       + Gont do pokrycia altany
     </label>
 
+    <label>
+      <input type="checkbox" id="decorativeEnds" />
+      + Zdobienia na końcach krokwi (dodatkowa opłata)
+    </label>
+
     <button onclick="calculate()">Oblicz</button>
 
     <div class="result" id="result"></div>
+
+    <div class="info">
+      <p><strong>Uwaga:</strong></p>
+      <ul>
+        <li>Standardowa wysokość altany to 2.1 m od podłoża do słupa.</li>
+        <li>Zdobienia na końcach krokwi dostępne za dodatkową opłatą – wybierz opcję powyżej.</li>
+      </ul>
+    </div>
 
     <div class="form-section">
       <h2>Wyślij zapytanie</h2>
@@ -108,6 +128,7 @@
       const length = parseFloat(document.getElementById('length').value);
       const roofExtra = parseFloat(document.getElementById('roof').value);
       const shingles = document.getElementById('shingles').checked;
+      const decorativeEnds = document.getElementById('decorativeEnds').checked;
 
       if (isNaN(width) || isNaN(length)) {
         document.getElementById('result').innerText = 'Podaj poprawne wymiary altany.';
@@ -115,8 +136,17 @@
       }
 
       const area = width * length;
+
+      // Wyliczanie proporcjonalnie do 24 m² = 3600 zł (podstawa: KVH + Sodra + boazeria)
       const basePrice = (area / 24) * 3600;
-      const totalPrice = Math.round(basePrice + roofExtra + (shingles ? area * 30 : 0));
+
+      // Koszt boazerii + gont
+      const shinglesCost = shingles ? area * 30 : 0;
+
+      // Koszt zdobień (przykładowa dopłata 150 zł)
+      const decorationCost = decorativeEnds ? 150 : 0;
+
+      const totalPrice = Math.round(basePrice + roofExtra + shinglesCost + decorationCost);
 
       document.getElementById('result').innerText = `Szacunkowa cena altany: ${totalPrice} zł`;
     }

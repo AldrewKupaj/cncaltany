@@ -2,97 +2,72 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kalkulator Altany CNC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Altany</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #e9ecef;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f7f2e8;
       color: #333;
+      padding: 20px;
     }
-
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
     label {
       display: block;
-      margin: 15px 0 5px;
-      font-weight: 600;
+      margin-top: 15px;
+      font-weight: bold;
     }
-
-    input[type="number"], select, button {
+    input, select, textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
       font-size: 16px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
-
-    input[type="checkbox"] {
-      margin-right: 10px;
-    }
-
-    .checkbox {
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-    }
-
     button {
-      background-color: #28a745;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #4CAF50;
       color: white;
-      font-weight: bold;
-      border: none;
-      margin-top: 20px;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #218838;
-    }
-
-    #result {
-      margin-top: 25px;
       font-size: 18px;
-      text-align: center;
-      font-weight: bold;
-      color: #333;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-
-    .note {
-      font-size: 14px;
-      color: #666;
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      font-size: 18px;
       margin-top: 20px;
+      font-weight: bold;
+    }
+    .form-section {
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Kalkulator Altany CNC</h2>
+    <h1>Kalkulator altany</h1>
+    <label for="width">Szerokość altany (m):</label>
+    <input type="number" id="width" />
 
-    <label for="x">Szerokość (m):</label>
-    <input type="number" id="x" placeholder="Np. 4">
-
-    <label for="y">Długość (m):</label>
-    <input type="number" id="y" placeholder="Np. 6">
+    <label for="length">Długość altany (m):</label>
+    <input type="number" id="length" />
 
     <label for="roof">Rodzaj dachu:</label>
     <select id="roof">
@@ -101,60 +76,49 @@
       <option value="300">Kopertowy (+300 zł)</option>
     </select>
 
-    <div class="checkbox">
-      <input type="checkbox" id="gont">
-      <label for="gont">+ Gont do pokrycia altany</label>
-    </div>
+    <label>
+      <input type="checkbox" id="shingles" />
+      + Gont do pokrycia altany
+    </label>
 
-    <button onclick="calculate()">Oblicz cenę</button>
+    <button onclick="calculate()">Oblicz</button>
 
-    <div id="result">
-    <label for="notes">Dodatkowe uwagi:</label>
-    <textarea id="notes" rows="4" placeholder="Np. kolor, inne preferencje..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:16px;"></textarea>
+    <div class="result" id="result"></div>
 
-    <button onclick="window.print()" style="background-color:#007bff; margin-top:10px;">Drukuj wycenę</button>
-    </div>
+    <div class="form-section">
+      <h2>Wyślij zapytanie</h2>
+      <form action="https://formspree.io/f/xblgbgpp" method="POST">
+        <label for="name">Imię i nazwisko:</label>
+        <input type="text" name="name" required />
 
-    <div class="note">
+        <label for="email">Adres e-mail:</label>
+        <input type="email" name="email" required />
 
-      <p><strong>Dodatkowe opcje (do ustalenia indywidualnie):</strong></p>
-      <ul>
-        <li>Ozdobne końcówki krokwi</li>
-        <li>Wysokość inna niż standardowa (2.1 m do słupa)</li>
-      </ul>
+        <label for="message">Dodatkowe uwagi:</label>
+        <textarea name="message" rows="4" placeholder="Np. niestandardowa wysokość, kolor, inne oczekiwania..."></textarea>
+
+        <button type="submit">Wyślij zapytanie</button>
+      </form>
     </div>
   </div>
 
   <script>
     function calculate() {
-      const x = parseFloat(document.getElementById('x').value);
-      const y = parseFloat(document.getElementById('y').value);
-      const gont = document.getElementById('gont').checked;
+      const width = parseFloat(document.getElementById('width').value);
+      const length = parseFloat(document.getElementById('length').value);
       const roofExtra = parseFloat(document.getElementById('roof').value);
+      const shingles = document.getElementById('shingles').checked;
 
-      if (!x || !y) {
-        document.getElementById('result').innerText = 'Uzupełnij wszystkie dane.';
+      if (isNaN(width) || isNaN(length)) {
+        document.getElementById('result').innerText = 'Podaj poprawne wymiary altany.';
         return;
       }
 
-      const baseArea = 4 * 6;
-      const newArea = x * y;
-      const scale = newArea / baseArea;
+      const area = width * length;
+      const basePrice = (area / 24) * 3600;
+      const totalPrice = Math.round(basePrice + roofExtra + (shingles ? area * 30 : 0));
 
-      const kvh = 0.8 * scale;
-      const sodra = 0.72 * scale;
-      const boazeria = 36 * scale;
-
-      let price = (kvh * 3000) + (sodra * 2700) + (boazeria * 53);
-      if (gont) {
-        price += boazeria * 30;
-      }
-
-      price += roofExtra;
-
-      document.getElementById('result').innerHTML = `
-        Szacunkowa cena altany: <br><span style="font-size:22px;">${price.toFixed(2)} zł</span>
-      `;
+      document.getElementById('result').innerText = `Szacunkowa cena altany: ${totalPrice} zł`;
     }
   </script>
 </body>
